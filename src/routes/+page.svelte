@@ -1,1 +1,1 @@
-<h1>hey there this is the home page!</h1>
+<h1>hey there this is the dashboard page!</h1>
