@@ -1,25 +1,40 @@
 import type { PageServerLoad } from '../$types';
 import { supabase } from '../../lib/supabaseClient';
-
-type Transaction = {
-	id: number;
-	date: Date;
-	description: string;
-	amount: number;
-	group_id: number;
-	category_id: number;
-	card_id: number;
-};
+import type { QueryData } from '@supabase/supabase-js';
 
 export const load: PageServerLoad = async () => {
-	const { data, error } = await supabase.from('transactions').select<'transactions', Transaction>();
+	const transactionsWithCategoriesQuery = supabase.from('transactions').select(`
+        id,
+        date,
+        amount,
+        description,
+        group_id (
+            id,
+            name
+        ),
+        category_id (
+            id, 
+            group_id,
+            name
+        ),
+        card_id (
+            id,
+            name
+        )
+    `);
+
+	type TransactionWithRelations = QueryData<typeof transactionsWithCategoriesQuery>[number];
+
+	const { data, error } = await transactionsWithCategoriesQuery;
 
 	if (error) {
-		console.error('Error loading transactions:', error.message);
-		return { transactions: [] };
+		console.error(error);
+		throw error;
 	}
 
+	const transactions: TransactionWithRelations[] = data || [];
+
 	return {
-		transactions: data ?? []
+		transactions
 	};
 };
