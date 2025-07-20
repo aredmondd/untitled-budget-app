@@ -1,13 +1,14 @@
-import type { PageServerLoad } from './$types';
-import { supabase } from '../lib/supabaseClient';
+import type { PageServerLoad } from '../$types';
+import { supabase } from '../../lib/supabaseClient';
 
 type Transaction = {
 	id: number;
-	date: string;
+	date: Date;
 	description: string;
 	amount: number;
 	group_id: number;
 	category_id: number;
+	card_id: number;
 };
 
 export const load: PageServerLoad = async () => {
