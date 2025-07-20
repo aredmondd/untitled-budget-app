@@ -3,6 +3,7 @@ untitled budget app is a full stack web app that replaces my clunky google sheet
 it was built with [sveltekit](https://svelte.dev/) and [tailwindcss](https://tailwindcss.com/)
 
 ### dev rules:
+
 - could not use AI to assist.
 - have to use a new tech stack.
 - has to actually be full stack. no "JSON" database...
