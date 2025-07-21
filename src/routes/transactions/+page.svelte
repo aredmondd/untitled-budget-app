@@ -15,6 +15,13 @@
 	});
 
 	let isGroupSelected = $derived(selectedGroupId !== null);
+
+	$effect(() => {
+		const filtered = filteredCategories();
+		if (filtered.length > 0 && selectedCategory == null) {
+			selectedCategory = filtered[0].id;
+		}
+	});
 </script>
 
 <div class="flex flex-1 flex-col">
