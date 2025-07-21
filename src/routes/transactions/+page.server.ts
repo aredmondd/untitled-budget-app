@@ -3,7 +3,7 @@ import { supabase } from '../../lib/supabaseClient';
 import type { QueryData } from '@supabase/supabase-js';
 
 export const load: PageServerLoad = async () => {
-	const transactionsWithCategoriesQuery = supabase.from('transactions').select(`
+	const transactionsQuery = supabase.from('transactions').select(`
         id,
         date,
         amount,
@@ -23,18 +23,49 @@ export const load: PageServerLoad = async () => {
         )
     `);
 
-	type TransactionWithRelations = QueryData<typeof transactionsWithCategoriesQuery>[number];
+	const groupsQuery = supabase.from('groups').select(`
+        id,
+        name
+    `);
 
-	const { data, error } = await transactionsWithCategoriesQuery;
+	const categoriesQuery = supabase.from('categories').select(`
+        id,
+        group_id,
+        name
+    `);
 
-	if (error) {
-		console.error(error);
-		throw error;
+	const [transactionsResult, groupsResult, categoriesResult] = await Promise.all([
+		transactionsQuery,
+		groupsQuery,
+		categoriesQuery
+	]);
+
+	type Transaction = QueryData<typeof transactionsQuery>[number];
+	type Group = QueryData<typeof groupsQuery>[number];
+	type Category = QueryData<typeof categoriesQuery>[number];
+
+	if (transactionsResult.error) {
+		console.error('Transactions error:', transactionsResult.error);
+		throw transactionsResult.error;
 	}
 
-	const transactions: TransactionWithRelations[] = data || [];
+	if (groupsResult.error) {
+		console.error('Groups error:', groupsResult.error);
+		throw groupsResult.error;
+	}
+
+	if (categoriesResult.error) {
+		console.error('Categories error:', categoriesResult.error);
+		throw categoriesResult.error;
+	}
+
+	const transactions: Transaction[] = transactionsResult.data || [];
+	const groups: Group[] = groupsResult.data || [];
+	const categories: Category[] = categoriesResult.data || [];
 
 	return {
-		transactions
+		transactions,
+		groups,
+		categories
 	};
 };
