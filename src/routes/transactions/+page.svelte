@@ -4,6 +4,7 @@
 	let transactions = $state(data.transactions);
 	let groups = $state(data.groups);
 	let categories = $state(data.categories);
+	let cards = $state(data.cards);
 
 	let open = $state(true);
 
@@ -18,8 +19,12 @@
 
 	$effect(() => {
 		const filtered = filteredCategories();
-		if (filtered.length > 0 && selectedCategory == null) {
+
+		// Always set to the first category in the new filtered list
+		if (filtered.length > 0) {
 			selectedCategory = filtered[0].id;
+		} else {
+			selectedCategory = null;
 		}
 	});
 </script>
@@ -72,7 +77,7 @@
 					<div class="bg-sage px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
 						<div class="mt-3 text-center">
 							<h2 class="text-deep-green font-bold text-3xl text-center">add a transaction</h2>
-							<div class="flex flex-col gap-2 mt-6 items-center">
+							<div class="flex flex-col gap-2 mt-6 mx-24">
 								<input class="border border-deep-green px-2 py-1" type="date" />
 								<input
 									class="border border-deep-green px-2 py-1"
@@ -104,19 +109,24 @@
 									type="text"
 									placeholder="amount"
 								/>
-								<input class="border border-deep-green px-2 py-1" type="text" placeholder="card" />
+								<select class="border border-deep-green px-2 py-1">
+									<option value={null}>select a card...</option>
+									{#each cards as card}
+										<option value={card.id}>{card.name}</option>
+									{/each}
+								</select>
 							</div>
 						</div>
 					</div>
-					<div class="bg-sage px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
+					<div class="bg-sage px-4 py-3 flex items-center justify-center gap-4 mt-6">
 						<button
 							type="button"
-							class="inline-flex w-full justify-center bg-deep-green px-3 py-2 text-sm font-semibold text-sage shadow-xs hover:bg-deep-green/90 sm:ml-3 sm:w-auto"
+							class="inline-flex w-full justify-center bg-deep-green px-3 py-1 text-sm font-semibold text-sage shadow-xs hover:bg-deep-green/90 sm:ml-3 sm:w-auto"
 							>add</button
 						>
 						<button
 							type="button"
-							class="mt-3 inline-flex w-full justify-center bg-deep-green/33 px-3 py-2 text-sm font-semibold text-deep-green sm:mt-0 sm:w-auto hover:bg-deep-green/50"
+							class="mt-3 inline-flex w-full justify-center bg-deep-green/33 px-3 py-1 text-sm font-semibold text-deep-green sm:mt-0 sm:w-auto hover:bg-deep-green/50"
 							onclick={(open = !open)}>cancel</button
 						>
 					</div>

@@ -34,15 +34,22 @@ export const load: PageServerLoad = async () => {
         name
     `);
 
-	const [transactionsResult, groupsResult, categoriesResult] = await Promise.all([
+	const cardQuery = supabase.from('cards').select(`
+        id,
+        name
+    `);
+
+	const [transactionsResult, groupsResult, categoriesResult, cardResult] = await Promise.all([
 		transactionsQuery,
 		groupsQuery,
-		categoriesQuery
+		categoriesQuery,
+		cardQuery
 	]);
 
 	type Transaction = QueryData<typeof transactionsQuery>[number];
 	type Group = QueryData<typeof groupsQuery>[number];
 	type Category = QueryData<typeof categoriesQuery>[number];
+	type Card = QueryData<typeof cardQuery>[number];
 
 	if (transactionsResult.error) {
 		console.error('Transactions error:', transactionsResult.error);
@@ -59,13 +66,20 @@ export const load: PageServerLoad = async () => {
 		throw categoriesResult.error;
 	}
 
+	if (cardResult.error) {
+		console.error('Cards error:', cardResult.error);
+		throw cardResult.error;
+	}
+
 	const transactions: Transaction[] = transactionsResult.data || [];
 	const groups: Group[] = groupsResult.data || [];
 	const categories: Category[] = categoriesResult.data || [];
+	const cards: Card[] = cardResult.data || [];
 
 	return {
 		transactions,
 		groups,
-		categories
+		categories,
+		cards
 	};
 };
