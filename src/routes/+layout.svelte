@@ -9,6 +9,7 @@
 		<div class="flex gap-6">
 			<a href="/">dashboard</a>
 			<a href="/transactions">transactions</a>
+			<a href="/wishlist">wishlist</a>
 		</div>
 	</nav>
 	<div class="flex flex-col pt-12 items-center justify-center">

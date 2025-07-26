@@ -158,7 +158,11 @@
 		</thead>
 		<tbody>
 			{#each getFilteredTransactions() as transaction}
-				<tr class="border text-center">
+				<tr
+					class={transaction.group_id?.name == 'income'
+						? 'border text-center bg-deep-green/10'
+						: 'border text-center'}
+				>
 					<td class="border-r px-6 py-1">{formatDate(transaction.date)}</td>
 					<td class="border-r px-6 py-1 text-left">{transaction.description}</td>
 					<td class="border-r px-6 py-1">{transaction.group_id?.name}</td>
